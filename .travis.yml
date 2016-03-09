@@ -1,0 +1,20 @@
+sudo: required
+
+services:
+  - docker
+
+language: nodejs
+
+env:
+  DOCKER_EMAIL: dev-all@zlab.co.jp
+  DOCKER_USERNAME: travis
+  secure: "CDa3+XPA6jJ13PXCtEMcv/rAZ1Y/2lrcCzmEqLyojBCPdwVMR4CaBd8Awj7FNTaldhCXD0euZxLiG73MV4diZBL069B5YOf1NxbmXHvCgh2iEBFp2V/VAhNglVADIg08zCWXREENHHsndIApg+bXvXtL5DGsfiGLafPS//bE5Qg="  
+
+install:
+  - echo "install"
+
+script:
+  - docker build -t shmurata/nodejs-sample:latest .
+  - docker login  -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" dtr.corp.zlab.co.jp
+  - docker tags -f dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest shmurata/nodejs-sample:latest
+  - docker push dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest
