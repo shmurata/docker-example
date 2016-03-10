@@ -5,16 +5,16 @@ services:
 
 language: nodejs
 
-env:
-  DOCKER_EMAIL: dev-all@zlab.co.jp
-  DOCKER_USERNAME: travis
-  secure: "CDa3+XPA6jJ13PXCtEMcv/rAZ1Y/2lrcCzmEqLyojBCPdwVMR4CaBd8Awj7FNTaldhCXD0euZxLiG73MV4diZBL069B5YOf1NxbmXHvCgh2iEBFp2V/VAhNglVADIg08zCWXREENHHsndIApg+bXvXtL5DGsfiGLafPS//bE5Qg="  
-
 install:
-  - echo "install"
+  - sudo mkdir -p "/etc/docker/certs.d/${DOCKER_REGISTRY}/"
+  - curl -d "{\"domain\":\"${CFSSL_TARGET_DOMAIN}\"}" "http://${CFSSL_TARGET_DOMAIN}:${CFSSL_PORT}/api/v1/cfssl/info" | jq -r .result.certificate | sudo tee "/etc/docker/certs.d/${DOCKER_REGISTRY}/ca.crt"
+  - sudo apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+  - echo "deb https://apt.dockerproject.org/repo ubuntu-precise main" | sudo tee /etc/apt/sources.list.d/docker.list
+  - sudo apt-get update
+  - sudo apt-get install docker-engine
+  - sudo cat /etc/docker/certs.d/dtr.corp.zlab.co.jp/ca.crt
+  - sudo docker login --email="$DOCKER_EMAIL" --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD" "$DOCKER_REGISTRY"
 
 script:
-  - docker build -t shmurata/nodejs-sample:latest .
-  - docker login  -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" dtr.corp.zlab.co.jp
-  - docker tags -f dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest shmurata/nodejs-sample:latest
-  - docker push dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest
+  - sudo docker build -t dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest .
+  - sudo docker push dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest
