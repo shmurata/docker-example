@@ -16,5 +16,5 @@ install:
   - sudo docker login --email="$DOCKER_EMAIL" --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD" "$DOCKER_REGISTRY"
 
 script:
-  - sudo docker build -t dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest .
-  - sudo docker push dtr.corp.zlab.co.jp/shmurata/nodejs-sample:latest
+  - sudo docker build -t "$DOCKER_REGISTRY"/zlab/nodejs-sample:latest .
+  - sudo docker push "$DOCKER_REGISTRY"/zlab/nodejs-sample:latest
